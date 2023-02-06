@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 export default function useFetch(endpoint, query, offsetNum){
 
     // Declare default "data/loading/error" states
-    const [data, setData] = useState(null);
+    const [data, setData] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null)
 
@@ -14,13 +14,13 @@ export default function useFetch(endpoint, query, offsetNum){
 
     useEffect(() => {
         // reset data/err/load states 
-        setData(null)
+        setData('')
         setLoading(true)
         setError(null);
 
         // Make Spotify API Call in async function
         const fetchData = async() => {
-            const url = new URL(`https://api.spotify.com/v1/${endpoint}`)
+            const url = new URL(`https://api.spotify.com/v1/${endpoint}/`)
             // depending on the endpoint, declare new URLSearchParams
         switch (endpoint) {
             case "search": 
@@ -28,6 +28,7 @@ export default function useFetch(endpoint, query, offsetNum){
                 q: query,
                 type:'track',
                 // if an "offsetNum" param is declared, use that value. If not, use "0"
+                market: "CA",
                 offset: offsetNum || 0
             })
             break;
@@ -45,15 +46,15 @@ export default function useFetch(endpoint, query, offsetNum){
             }
             const apiData = await response.json()
             if(apiData){
-                setData(apiData);
                 setLoading(false);
+                setData(apiData);
             }
         }
         fetchData()
         .catch((err) => {
             setError(`${err}`)
         })
-    },[endpoint, query, offsetNum, token])
-    
+    },[endpoint, offsetNum, token, query])
+
     return { data, loading, error }
 }

@@ -13,7 +13,7 @@ function App() {
         <Header />
         {!isLoggedIn? (
           <Authentication />
-        ): (
+        ): ( 
           <h2>Logged In!</h2>
         )}
       </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { FaSpotify } from 'react-icons/fa'
 
 import {
     selectQuery,
@@ -7,7 +8,11 @@ import {
     setQuery,
     setResults,
     setSelection,
-    selectSelection
+    selectSelection,
+    selectSubmission,
+    setSubmission,
+    setIsSelected,
+    selectIsSelected
 } from './trackSearchSlice'
 
 import useFetch from '../../hooks/useFetch'
@@ -26,6 +31,11 @@ input[type="radio"]{
     background:var(--green);
     color:var(--white);
     font-weight:600;
+  }
+  &.selected ~ .resultDetails {
+    background:#000;
+    color:var(--white);
+    font-style:italic;
   }
 }
 
@@ -57,6 +67,9 @@ export function TrackSearch(){
     const dispatch = useDispatch()
     const query = useSelector(selectQuery)
     const results = useSelector(selectResults)
+    const selectionMade = useSelector(selectIsSelected)
+    const selection = useSelector(selectSelection)
+    const submission = useSelector(selectSubmission)
     const { data, loading, error } = useFetch('search', query)
 
     const handleSearch = (e) => {
@@ -72,20 +85,51 @@ export function TrackSearch(){
       }
     }
 
+
     const handleClear = () => {
       dispatch(setQuery(''));
       dispatch(setResults([]));
+      dispatch(setSelection(null));
+      dispatch((setIsSelected(false)));
+    }
+
+    const handleRadioInput = (e) => {
+      const value = e.target.value
+      dispatch(setSelection(results.filter((items) => {
+        return items.id === value
+      })[0]))}
+
+    const handleSubmit = (e) => {
+      e.preventDefault()
+      if(selectionMade){
+        dispatch(setSubmission(selection))
+      } else {
+        dispatch(setSubmission(results[0]))
+      }
+      console.log(selection)
+      handleClear();
+    }
+
+    const handleKeyDown = (e) => {
+      const keycode = e.code
+      if(keycode === "Enter") {
+        dispatch((setIsSelected(true)))
+        handleSubmit(e)
+      }
     }
 
 
     return (
-        <SearchFormStyles>
+        <SearchFormStyles
+        onSubmit={handleSubmit}
+        className="trackSearchForm">
             <fieldset>
                 <legend>Step 1: Search for A Song</legend>
                 <label htmlFor="trackSearch">Enter the name of a song</label>
                 <div className="searchContainer">
                   <div className="searchInput">
-                      <input 
+                      <input
+                      required 
                       type="text" 
                       name="trackSearch" 
                       id="trackSearch" 
@@ -100,7 +144,7 @@ export function TrackSearch(){
                         Clear Search
                       </button>
                   </div>
-                    {results.length > 0 &&
+                  {results.length > 0 &&
                   <div className="resultsContainer">
                         <ul className="resultsList">
                           {results.map((song, index) => {
@@ -108,9 +152,16 @@ export function TrackSearch(){
                             return (
                               <li key={`${song.id} - ${index}`}>
                                 <label htmlfor="searchResult">
-                                  <input type="radio" name="searchResult" id={song.id} value={song.id} />
+                                  <input 
+                                  type="radio" 
+                                  name="searchResult" 
+                                  id={song.id} 
+                                  value={song.id}
+                                  onChange={handleRadioInput}
+                                  onKeyDown={handleKeyDown}
+                                  />
                                   <div className="resultDetails">
-                                    {image && <img src={image.url} alt={song.name}/>}
+                                    {image ? <img src={image.url} alt={song.name}/> : <FaSpotify />}
                                     <p>{song.name}</p>
                                   </div>
                                 </label>

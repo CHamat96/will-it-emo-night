@@ -4,14 +4,9 @@ const initialState = {
     query:'',
     results:[],
     optionSelected: false,
-    selection: {
-        artistName:'',
-        artistId: '',
-        trackName:'',
-        trackURI: '',
-        preview:'',
-        image: '',
-    }
+    searchSubmitted: false,
+    selection: {},
+    submission: {}
 }
 
 const trackSearchSlice = createSlice({
@@ -25,25 +20,23 @@ const trackSearchSlice = createSlice({
             state.results = action.payload
         },
         setSelection: (state, action) => {
+            state.selection = action.payload
+        },
+        setIsSelected: (state, action) => {
             state.optionSelected = true
-            state.selection = {
-                artistName: action.payload.artists[0].name,
-                artistId: action.payload.artists[0].id,
-                trackName: action.payload.name,
-                trackURI: action.payload.uri,
-                preview: action.payload.preview_url,
-                image: action.payload.album.images[0].url,
-                trackId: action.payload.id,
-            }
+        },
+        setSubmission: (state, action) => {
+            state.submission = action.payload
         }
-        
     },
 })
-export const { setQuery, setResults, setSelection } = trackSearchSlice.actions
+export const { setQuery, setResults, setSelection, setSubmission, setIsSelected } = trackSearchSlice.actions
 
 export const selectQuery = (state) => state.tracks.query
 export const selectResults = (state) => state.tracks.results
 export const hasSelection = (state) => state.tracks.optionSelected
 export const selectSelection = (state) => state.tracks.selection
+export const selectIsSelected = (state) => state.tracks.optionSelected
+export const selectSubmission = (state) => state.tracks.submission
 
 export default trackSearchSlice.reducer;

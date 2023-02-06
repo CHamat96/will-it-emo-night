@@ -29,6 +29,12 @@ const GlobalStyles = createGlobalStyle`
     margin:0 auto;
 }
 
+img {
+    display:block;
+    max-width:100%;
+    height:auto;
+}
+
 `
 
 export default GlobalStyles

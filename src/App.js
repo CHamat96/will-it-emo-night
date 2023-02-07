@@ -1,35 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { loggedIn } from './features/authentication/authenticationSlice';
 import Header from './components/Header';
 import { Authentication } from './features/authentication/Authentication';
 import { TrackSearch } from './features/trackSearch/TrackSearch';
-import { isSelectionMade, selectSubmission, selectTrackID, selectArtistID } from './features/trackSearch/trackSearchSlice';
+import { isSelectionMade, setArtistID, setSelectionMade, setSubmission, setTrackID } from './features/trackSearch/trackSearchSlice';
 import SongAnalysis from './components/TrackAnalysis';
+import Footer from './components/Footer';
+import useFetch from './hooks/useFetch';
+import RandomButton from './components/RandomButton';
 
 function App() {
   const isLoggedIn = useSelector(loggedIn);
-  const hasSelection = useSelector(isSelectionMade)
-  const submission = useSelector(selectSubmission)
-  const artistID = useSelector(selectArtistID)
-  const trackID = useSelector(selectTrackID)
+  const trackSubmitted = useSelector(isSelectionMade)
+
   return (
     <div className="App">
-      <div className="wrapper">
         <Header />
-        {!isLoggedIn? (
-          <Authentication />
-        ): ( 
-          <>          
-            <h2>Logged In!</h2>
-            <TrackSearch />
-            {hasSelection && 
-            <SongAnalysis />
-            }
-          </>
-        )}
-      </div>
+        <main>
+          <div className="wrapper">
+          {!isLoggedIn? (
+            <Authentication />
+          ): ( 
+            <>          
+              <TrackSearch />
+              {trackSubmitted ?
+                <SongAnalysis />
+                :
+                <>
+                <p>Search for your favourite song to display its "Sadness" & "Moshability" ratings</p>
+                <p>or</p>
+                <RandomButton
+                message="Get a Random Song" />
+                </>
+              }
+            </>
+          )}
+          </div>
+        </main>
+        <Footer />
     </div>
   );
 }

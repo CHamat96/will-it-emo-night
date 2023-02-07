@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     query: '',
@@ -8,6 +8,9 @@ const initialState = {
     trackID: '',
     selectionMade: false,
 }
+
+export const revertAll = createAction('REVERT_ALL')
+
 
 const trackSearchSlice = createSlice({
     name:'tracks',
@@ -30,8 +33,11 @@ const trackSearchSlice = createSlice({
         },
         setSelectionMade: (state, action) => {
             state.selectionMade = action.payload
-        }
-    }
+        },
+    },
+    extraReducers: (builder) => 
+    builder
+    .addCase(revertAll, () => initialState)
 })
 
 export const { setQuery, setResults, setSubmission, setArtistID, setTrackID, setSelectionMade } = trackSearchSlice.actions

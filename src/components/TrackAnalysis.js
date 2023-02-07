@@ -8,19 +8,32 @@ import { selectSubmission, selectArtistID, selectTrackID, isSelectionMade } from
 
 import useFetch from "../hooks/useFetch";
 
-const genre_array = ['pop punk', 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post']
+const genre_array = ['pop punk', 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post', 'riot grrrl']
 
 const ResultStyles = styled.section`
   display:flex;
   flex-wrap:wrap;
   align-items:center;
+  justify-content:space-between;
 
-  img {
-    max-width:500px;
+  .queryContainer {
+    max-width:450px;
+    flex:1 2 auto;
+  }
+
+  .imageContainer {
+    width:100%;
+    img {
+      margin:0 auto;
+    }
   }
 
   .songAnalysis {
-    flex: 2 1 250px;
+    flex: 1 1 250px;
+  }
+
+  .trackRatings {
+    text-align:left;
   }
 `
 
@@ -56,36 +69,45 @@ export default function SongAnalysis(){
       </>
     )
   }
+
+  // Regex variable that is used during the render to format based on whether the Artist's name ends with an "s"
+  let regex = /s$/
+  
   return (
     <>
     {(artistLoading || trackLoading) &&
-    <h2>Loading...</h2>
+    <h2>Locating the nearest Hot Topic...</h2>
     }
     {selectionMade && artistData && trackData && 
       <ResultStyles>
         <div className="queryContainer">
-          <h3>You Selected {selection.name} by {artistData.name}</h3>
-          <img src={selection.album.images[0].url} alt={selection.name} />
+          <h2>You Selected "{selection.name}" by {artistData.name}</h2>
+          <div className="imageContainer">
+            <img src={selection.album.images[1].url} alt={selection.name} />
+          </div>
         </div>
         <div className="songAnalysis">
-        {isArtistEmo ? (
+          <h3>{regex.test(artistData.name) ? "Are" : 'Is' } <span className="italic">{artistData.name}</span> Emo Enough?</h3>
+        {isArtistEmo ? 
+
+        (
                     <>
-                    <p>{artistData.name}'s genres include {artistData.genres.map((genre) => `"${genre}"`).join(', ').replace(/, ([^,]*)$/, ' and $1')}, so they are definitely "Emo enough" for Emo Night</p>
+                    <p>{artistData.name}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name) ? "are" : 'is' } considered</span>} {artistData.genres.map((genre) => `"${genre.toUpperCase()}"`).join(', ').replace(/, ([^,]*)$/, ' and $1')}, so they are definitely "Emo enough" for Emo Night</p>
                     </>
                     )
                     
                      : (
                         <>
-                            <p>{selection.artistName}'s genres include {artistData.genres.map((genre) => `"${genre}"`).join(', ').replace(/, ([^,]*)$/, ' and $1')}, so they are not "Emo enough" for Emo Night</p>
+                            <p>{artistData.name}{artistData.genres.length >= 2 ? <span> {regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name) ? "are" : 'is' } considered</span>}{artistData.genres.map((genre) => `"${genre}"`).join(', ').replace(/, ([^,]*)$/, ' and $1')}, so they are not "Emo enough" for Emo Night</p>
                         </>
                     )}
-                    <div>
+                    <div className="trackRatings">
                       <ul>
                         <li>
-                          <p>Sadness: {isSad}% Sad</p>
+                          <p>Sadness: {isSad}% Sad {isSad === 69 && <span>(nice)</span>}</p>
                         </li>
                         <li>
-                          <p>Energy: {isEnergetic}% Moshable</p>
+                          <p>Energy: {isEnergetic}% Moshable {isEnergetic === 69 && <span>(nice)</span>}</p>
                         </li>
                       </ul>
                     </div>

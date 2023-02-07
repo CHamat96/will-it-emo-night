@@ -10,10 +10,7 @@ import SongAnalysis from './components/TrackAnalysis';
 
 function App() {
   const isLoggedIn = useSelector(loggedIn);
-  const hasSelection = useSelector(isSelectionMade)
-  const submission = useSelector(selectSubmission)
-  const artistID = useSelector(selectArtistID)
-  const trackID = useSelector(selectTrackID)
+  const trackSubmitted = useSelector(isSelectionMade)
   return (
     <div className="App">
       <div className="wrapper">
@@ -22,10 +19,9 @@ function App() {
           <Authentication />
         ): ( 
           <>          
-            <h2>Logged In!</h2>
             <TrackSearch />
-            {hasSelection && 
-            <SongAnalysis />
+            {trackSubmitted &&
+              <SongAnalysis />
             }
           </>
         )}

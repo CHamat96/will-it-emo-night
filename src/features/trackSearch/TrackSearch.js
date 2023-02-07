@@ -2,37 +2,52 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectQuery, 
   selectResults, 
-  selectSubmission, 
   setQuery, 
   setResults, 
   setSubmission,
   setArtistID,
   setTrackID, 
-  setSelectionMade} from './trackSearchSlice'
+  setSelectionMade
+} from './trackSearchSlice'
 
 import useFetch from '../../hooks/useFetch';
 
 import styled from "styled-components";
 
 const FormStyles = styled.form`
-.searchInput {
-  gap: 1rem;
-  input[type="text"],
-  button:first-of-type{
-    height:25px;
-  }
-  > * {
-    margin-right:35px;
-    width:250px;
-  }
-  button {
-    min-height:25px;
-  }
-}
+
 .searchContainer {
   position:relative;
 }
+
+.searchInput {
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  align-items:center;
+  max-width:1000px;
+  > * {
+    margin-right:50px;
+    min-width:250px;
+  }
+}
+
+.clearInput {
+  height:30px;
+}
+
+.userInput {
+  label {
+    display:block;
+    text-align:left;
+  }
+  input[type="text"]{
+    width:100%;
+  }
+}
   .searchResults {
+    border:solid 0.5px black;
     position:absolute;
     background:var(--white);
     height:300px;
@@ -65,7 +80,6 @@ export function TrackSearch(){
   const [random, setRandom] = useState(null)
   const query = useSelector(selectQuery)
   const results = useSelector(selectResults)
-  const submission = useSelector(selectSubmission)
   
   const { data, loading, error } = useFetch('search', query)
   const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', 'genre:pop-punk', randomOffset)
@@ -135,19 +149,26 @@ export function TrackSearch(){
   }
 
   return (
-    <FormStyles>
+    <FormStyles
+    value={results[0] ? results[0].id : ''}
+    onSubmit={(e) => handleSubmission(e, results[0])}>
       <div className="wrapper">
-        <label htmlFor="trackSearch">Search for A Song</label>
         <div className="searchContainer">
           <div className="searchInput">
+            <div className="userInput">
+            <label htmlFor="trackSearch">Search for A Song</label>
             <input 
             type="text" 
             name="trackSearch" 
             id="trackSearch" 
             value={query}
+            required
+            minLength="2"
             onChange={handleInput}/>
+            </div>
             <button
             type="button"
+            className="clearInput"
             onClick={handleClear}>Clear Search</button>
             <button
             type="button"

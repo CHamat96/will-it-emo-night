@@ -1,178 +1,180 @@
-import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { FaSpotify } from 'react-icons/fa'
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectQuery, 
+  selectResults, 
+  selectSubmission, 
+  setQuery, 
+  setResults, 
+  setSubmission,
+  setArtistID,
+  setTrackID, 
+  setSelectionMade} from './trackSearchSlice'
 
-import {
-    selectQuery,
-    selectResults,
-    setQuery,
-    setResults,
-    setSelection,
-    selectSelection,
-    selectSubmission,
-    setSubmission,
-    setIsSelected,
-    selectIsSelected
-} from './trackSearchSlice'
+import useFetch from '../../hooks/useFetch';
 
-import useFetch from '../../hooks/useFetch'
-import styled from 'styled-components'
+import styled from "styled-components";
 
-const SearchFormStyles = styled.form`
-  .searchContainer {
-    position:relative;
-    width:100%;
+const FormStyles = styled.form`
+.searchInput {
+  gap: 1rem;
+  input[type="text"],
+  button:first-of-type{
+    height:25px;
   }
-input[type="radio"]{
-  opacity:0;
-  position:absolute;
-  &:first-of-type:focus ~ .resultDetails,
-  &:checked ~ .resultDetails {
-    background:var(--green);
-    color:var(--white);
-    font-weight:600;
+  > * {
+    margin-right:35px;
+    width:250px;
   }
-  &.selected ~ .resultDetails {
-    background:#000;
-    color:var(--white);
-    font-style:italic;
+  button {
+    min-height:25px;
   }
 }
-
-.resultsContainer {
-  position:absolute;
-  border:solid 1px #000;
-  text-align:left;
-  top:25px;
-  left:0;
-  display:block;
-  width:100%;
-  max-height:250px;
-  overflow-y:scroll;
-  padding:0px;
+.searchContainer {
+  position:relative;
 }
-  .resultDetails {
-    width:100%;
-    display:inline-flex;
-    align-items:center;
-    justify-content:flex-start;
+  .searchResults {
+    position:absolute;
+    background:var(--white);
+    height:300px;
+    overflow-y:auto;
+    overflow-x:visible;  
+    width:50%;
+  }
+  .resultContainer {
+    display:flex;
+    text-align:left;
     img {
-      height:80px;
-      margin-right:10px;
+      max-width:65px;
+      margin-right:15px;
+    }
+    &:hover,
+    &:focus {
+      background:var(--green);
+      font-weight:600;
+      color:var(--white);
+    }
+    &:active {
+      background:#000;
+      font-style:italic;
     }
   }
 `
-
+const randomOffset = Math.floor(Math.random() * 50)
 export function TrackSearch(){
-    const dispatch = useDispatch()
-    const query = useSelector(selectQuery)
-    const results = useSelector(selectResults)
-    const selectionMade = useSelector(selectIsSelected)
-    const selection = useSelector(selectSelection)
-    const submission = useSelector(selectSubmission)
-    const { data, loading, error } = useFetch('search', query)
+  const dispatch = useDispatch();
+  const [random, setRandom] = useState(null)
+  const query = useSelector(selectQuery)
+  const results = useSelector(selectResults)
+  const submission = useSelector(selectSubmission)
+  
+  const { data, loading, error } = useFetch('search', query)
+  const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', 'genre:pop-punk', randomOffset)
 
-    const handleSearch = (e) => {
-      e.preventDefault();
-      let value = e.target.value;
-      if(value.length > 0){
-        dispatch(setQuery(value))
-        if(!loading && !error){
-          dispatch(setResults(data.tracks.items))
-        }
-      } else if (value.length === 0){
-        handleClear()
-      }
+  useEffect(() => {
+    if(!randomLoading && !randomError && randomData) {
+      let tracks = randomData.tracks.items
+      setRandom(tracks)
     }
+  }, [randomData, randomLoading, randomError])
 
-
-    const handleClear = () => {
-      dispatch(setQuery(''));
-      dispatch(setResults([]));
-      dispatch(setSelection(null));
-      dispatch((setIsSelected(false)));
-    }
-
-    const handleRadioInput = (e) => {
-      const value = e.target.value
-      dispatch(setSelection(results.filter((items) => {
-        return items.id === value
-      })[0]))}
-
-    const handleSubmit = (e) => {
-      e.preventDefault()
-      if(selectionMade){
-        dispatch(setSubmission(selection))
-      } else {
-        dispatch(setSubmission(results[0]))
+  const handleInput = (e) => {
+    let value = e.target.value
+    if(value.length > 0 ){
+      dispatch(setQuery(value))
+      if(!loading && !error && data){
+        dispatch(setResults(data.tracks.items))
       }
-      console.log(selection)
+    } else if (value.length === 0){
       handleClear();
     }
+  }
 
-    const handleKeyDown = (e) => {
-      const keycode = e.code
-      if(keycode === "Enter") {
-        dispatch((setIsSelected(true)))
-        handleSubmit(e)
+  const handleClear = () => {
+    dispatch(setQuery(''))
+    dispatch(setResults([]))
+  }
+
+  const handleArrowKeys = (e, song) => {
+    if(e.key === "ArrowUp" && e.target.previousSibling){
+      e.preventDefault();
+      const prevSib = e.target.previousSibling;
+      prevSib.focus();
+      if(prevSib.offsetTop < e.target.offsetTop){
+        e.target.scrollIntoView(true)
       }
     }
+    if(e.key === "ArrowDown" && e.target.nextSibling){
+      e.preventDefault();
+      const nextSib = e.target.nextSibling;
+      nextSib.focus();
+      if(nextSib.offsetTop + nextSib.offsetHeight > e.target.offsetTop + e.target.offsetHeight){
+        e.target.scrollIntoView(false)
+      }
+    } else if (e.key === "Enter"){
+      handleClear();
+      handleSubmission(e, song)
+    }
+  }
 
+  const handleSubmission = (e, song) => {
+    e.preventDefault();
+    dispatch(setArtistID(song.artists[0].id))
+    dispatch(setTrackID(song.id))
+    dispatch(setSubmission(song))
+    dispatch(setSelectionMade(true))
+    handleClear();
+  }
 
-    return (
-        <SearchFormStyles
-        onSubmit={handleSubmit}
-        className="trackSearchForm">
-            <fieldset>
-                <legend>Step 1: Search for A Song</legend>
-                <label htmlFor="trackSearch">Enter the name of a song</label>
-                <div className="searchContainer">
-                  <div className="searchInput">
-                      <input
-                      required 
-                      type="text" 
-                      name="trackSearch" 
-                      id="trackSearch" 
-                      value={query}
-                      onChange={handleSearch}
-                      autoComplete="off"
-                      />
-                      <button
-                      type="button"
-                      className="clearSearch"
-                      onClick={handleClear}>
-                        Clear Search
-                      </button>
+  const handleRandom = (e) => {
+    e.preventDefault();
+    const filteredSongs = random.filter((song) => {
+      return song.album.album_type !== "compilation"
+    })
+    const index = Math.floor(Math.random() * filteredSongs.length)
+    handleSubmission(e, filteredSongs[index])
+  }
+
+  return (
+    <FormStyles>
+      <div className="wrapper">
+        <label htmlFor="trackSearch">Search for A Song</label>
+        <div className="searchContainer">
+          <div className="searchInput">
+            <input 
+            type="text" 
+            name="trackSearch" 
+            id="trackSearch" 
+            value={query}
+            onChange={handleInput}/>
+            <button
+            type="button"
+            onClick={handleClear}>Clear Search</button>
+            <button
+            type="button"
+            className="spotifyButton"
+            onClick={handleRandom}>Pick a Random Song!</button>
+          </div>
+          {results.length > 0 && 
+          <div className="searchResults">
+              {results.map((song, index) => {
+                const image = song.album.images
+                return (
+                  <div 
+                  className="resultContainer"
+                  key={`${song.id} - ${index}`}
+                  tabIndex={index}
+                  onKeyDown={e => handleArrowKeys(e, song)}
+                  onClick={e => handleSubmission(e, song)}
+                  >
+                    {image[0] && <img src={image[0].url} alt={song.name} />}
+                    <p>{song.name}</p>
                   </div>
-                  {results.length > 0 &&
-                  <div className="resultsContainer">
-                        <ul className="resultsList">
-                          {results.map((song, index) => {
-                            const image = song.album.images[0]
-                            return (
-                              <li key={`${song.id} - ${index}`}>
-                                <label htmlfor="searchResult">
-                                  <input 
-                                  type="radio" 
-                                  name="searchResult" 
-                                  id={song.id} 
-                                  value={song.id}
-                                  onChange={handleRadioInput}
-                                  onKeyDown={handleKeyDown}
-                                  />
-                                  <div className="resultDetails">
-                                    {image ? <img src={image.url} alt={song.name}/> : <FaSpotify />}
-                                    <p>{song.name}</p>
-                                  </div>
-                                </label>
-                              </li>
-                            )
-                          })}
-                        </ul>
-                    </div>
-                    }
-                    </div>
-            </fieldset>
-        </SearchFormStyles>
-    )
+                )
+              })}
+          </div>
+          }
+        </div>
+      </div>
+    </FormStyles>
+  )
 }

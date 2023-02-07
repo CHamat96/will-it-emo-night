@@ -17,10 +17,9 @@ export default function useFetch(endpoint, query, offsetNum){
         setData('')
         setLoading(true)
         setError(null);
-
         // Make Spotify API Call in async function
         const fetchData = async() => {
-            const url = new URL(`https://api.spotify.com/v1/${endpoint}/`)
+            const url = new URL(`https://api.spotify.com/v1/${endpoint}`)
             // depending on the endpoint, declare new URLSearchParams
         switch (endpoint) {
             case "search": 
@@ -36,6 +35,7 @@ export default function useFetch(endpoint, query, offsetNum){
             default:
             break;
         }
+        // Don't fetch request unless the query is at least 1 letter long
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`

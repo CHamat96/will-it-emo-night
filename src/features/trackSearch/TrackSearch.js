@@ -53,7 +53,6 @@ const FormStyles = styled.form`
     height:300px;
     overflow-y:auto;
     overflow-x:visible;  
-    width:50%;
   }
   .resultContainer {
     display:flex;
@@ -74,22 +73,14 @@ const FormStyles = styled.form`
     }
   }
 `
-const randomOffset = Math.floor(Math.random() * 50)
+
 export function TrackSearch(){
   const dispatch = useDispatch();
-  const [random, setRandom] = useState(null)
   const query = useSelector(selectQuery)
   const results = useSelector(selectResults)
   
   const { data, loading, error } = useFetch('search', query)
-  const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', 'genre:pop-punk', randomOffset)
 
-  useEffect(() => {
-    if(!randomLoading && !randomError && randomData) {
-      let tracks = randomData.tracks.items
-      setRandom(tracks)
-    }
-  }, [randomData, randomLoading, randomError])
 
   const handleInput = (e) => {
     let value = e.target.value
@@ -139,14 +130,6 @@ export function TrackSearch(){
     handleClear();
   }
 
-  const handleRandom = (e) => {
-    e.preventDefault();
-    const filteredSongs = random.filter((song) => {
-      return song.album.album_type !== "compilation"
-    })
-    const index = Math.floor(Math.random() * filteredSongs.length)
-    handleSubmission(e, filteredSongs[index])
-  }
 
   return (
     <FormStyles
@@ -163,6 +146,7 @@ export function TrackSearch(){
             id="trackSearch" 
             value={query}
             required
+            autoComplete="off"
             minLength="2"
             onChange={handleInput}/>
             </div>
@@ -170,10 +154,6 @@ export function TrackSearch(){
             type="button"
             className="clearInput"
             onClick={handleClear}>Clear Search</button>
-            <button
-            type="button"
-            className="spotifyButton"
-            onClick={handleRandom}>Pick a Random Song!</button>
           </div>
           {results.length > 0 && 
           <div className="searchResults">

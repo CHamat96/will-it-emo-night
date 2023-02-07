@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import GlobalStyles from './styles/GlobalStyles.js';
+import Typography from './styles/Typography';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -15,6 +16,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <GlobalStyles />
+      <Typography />
       <Router>
         <App />
       </Router>

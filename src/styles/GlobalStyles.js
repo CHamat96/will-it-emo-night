@@ -1,4 +1,7 @@
 import { createGlobalStyle } from "styled-components";
+import '@fontsource/oswald/index.css'
+import '@fontsource/bangers/index.css'
+import '@fontsource/cabin/index.css'
 
 const GlobalStyles = createGlobalStyle`
 
@@ -8,29 +11,41 @@ html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}bo
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
+html {
+    font-size:62.5%;
+    font-family:var(--bodyFont);
+}
+
 :root {
     --green:#1DB954;
     --white: #ffffff;
-    --bodyFont: 'Helvetica', sans-serif;
+    --darkRed: #69140e;
+    --red:#FF0035;
+    --charcoal: #242f40;
+    --blue: #3E92CC;
+    --yellow: #CCA43B;
+    --titleFont: 'Bangers', sans-serif;
+    --bodyFont: 'Cabin', sans-serif;
+    --subFont: 'Oswald', sans-serif;
 }
 
-h2 {
-    text-align:left;
-}
 
 
-.spotifyButton {
+.cta {
     background:var(--green);
     color:var(--white);
-    font-family:var(--bodyFont);
     font-weight:600;
+    font-size:2rem;
     text-transform:uppercase;
     padding:15px 10px;
     border:none;
     border-radius:20px;
+    text-shadow:2px 3px 1px black;
+    font-family:var(--titleFont);
     &:hover {
         cursor: pointer;
         color:#000;
+        text-shadow: 2px 3px 1px var(--white);
     }
 }
 
@@ -38,6 +53,10 @@ h2 {
     width:1400px;
     max-width:80%;
     margin:0 auto;
+}
+
+main {
+    min-height:70vh;
 }
 
 img {

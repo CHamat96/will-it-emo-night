@@ -26,10 +26,9 @@ export default function useFetch(endpoint, query, offsetNum){
             url.search = new URLSearchParams({
                 q: query,
                 type:'track',
-                limit:50,
                 // if an "offsetNum" param is declared, use that value. If not, use "0"
+                offset: offsetNum || 0,
                 market: "CA",
-                offset: offsetNum || 0
             })
             break;
             default:

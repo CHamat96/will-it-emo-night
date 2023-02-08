@@ -95,7 +95,7 @@ ul {
     text-align:center;
     padding:50px;
     max-width:600px;
-    border: solid 4px black;
+    border:ridge 10px var(--green);
     display:flex;
     flex-direction:column;
     justify-content:center;

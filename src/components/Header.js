@@ -8,7 +8,7 @@ import { TrackSearch } from "../features/trackSearch/TrackSearch";
 
 const HeaderStyles = styled.header`
     text-align:center;
-    padding:15px;
+    padding:50px 25px;
     h1 {
         margin:0;
     }

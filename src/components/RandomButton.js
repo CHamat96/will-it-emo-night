@@ -37,7 +37,11 @@ export default function RandomButton({ message }){
     dispatch(setTrackID(song.id))
     dispatch(setSubmission(song))
     dispatch(setSelectionMade(true))
-
+    if(window.location.pathname === '/results'){
+      // When user is on the "results page" on a mobile screen, scroll to the top of the "results" section after clicking the button
+      const results = document.querySelector('.queryContainer')
+      results.scrollIntoView();
+    }
   }
   return (
 

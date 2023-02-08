@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import { useSelector } from 'react-redux';
 import { loggedIn } from './features/authentication/authenticationSlice';
 import Header from './components/Header';

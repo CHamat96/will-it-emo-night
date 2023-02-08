@@ -40,6 +40,13 @@ input {
 a {
   text-decoration:none;
   color:var(--charcoal);
+  &.spotifyLink {
+    font-weight:600;
+    &:hover,
+    &:focus {
+      color:var(--green);
+    }
+  }
 }
 `
 

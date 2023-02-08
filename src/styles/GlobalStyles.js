@@ -1,7 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 import '@fontsource/oswald/index.css'
 import '@fontsource/bangers/index.css'
-import '@fontsource/cabin/index.css'
+import '@fontsource/cabin/'
+import '@fontsource/cabin/700.css'
+import '@fontsource/sora'
+import '@fontsource/sora/800.css'
 
 const GlobalStyles = createGlobalStyle`
 
@@ -11,23 +14,30 @@ html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}bo
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
+:root {
+    --green:#1DB954;
+    --black:#1C2321;
+    --white:#FFFFFF;
+    --offWhite: #E0FFFF;
+    --darkRed: #69140e;
+    --red:#E63946;
+    --charcoal: #242f40;
+    --blue: #0582CA;
+    --yellow: #CCA43B;
+    --brown: #2B0000;
+
+    --titleFont: 'Bangers', sans-serif;
+    --bodyFont: 'Cabin', sans-serif;
+    --subFont: 'Oswald', sans-serif;
+
+    --dashedBorder: dashed 10px black;
+}
+
 html {
     font-size:62.5%;
     font-family:var(--bodyFont);
 }
 
-:root {
-    --green:#1DB954;
-    --white: #ffffff;
-    --darkRed: #69140e;
-    --red:#FF0035;
-    --charcoal: #242f40;
-    --blue: #3E92CC;
-    --yellow: #CCA43B;
-    --titleFont: 'Bangers', sans-serif;
-    --bodyFont: 'Cabin', sans-serif;
-    --subFont: 'Oswald', sans-serif;
-}
 
 
 
@@ -37,7 +47,7 @@ html {
     font-weight:600;
     font-size:2rem;
     text-transform:uppercase;
-    padding:15px 10px;
+    padding:15px 20px;
     border:none;
     border-radius:20px;
     text-shadow:2px 3px 1px black;
@@ -46,6 +56,12 @@ html {
         cursor: pointer;
         color:#000;
         text-shadow: 2px 3px 1px var(--white);
+    }
+    &.spotifyCTA {
+        font-family:'Oswald', sans-serif;
+        font-weight:700;
+        text-shadow:none;
+        margin:15px 0;
     }
 }
 
@@ -72,6 +88,18 @@ ul {
     margin:0;
     padding:0;
 }
+
+.initialSearch {
+    margin:0 auto;
+    min-height:50vh;
+    text-align:center;
+    padding:50px;
+    max-width:600px;
+    border: solid 4px black;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
 
 `
 

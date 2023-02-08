@@ -3,30 +3,27 @@ import { useDispatch } from "react-redux"
 import { setArtistID, setSelectionMade, setSubmission, setTrackID } from "../features/trackSearch/trackSearchSlice"
 import useFetch from "../hooks/useFetch"
 
-const genre_array = ['pop punk', 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post', 'riot grrrl', 'Folk', 'Funk', 'Garage Rock', 'New Wave', 'pop', 'rock', 'midwest emo']
+const genre_array = ['pop punk', 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post', 'riot grrrl', 'Folk', 'Funk', 'Garage Rock', 'New Wave', 'pop', 'rock', 'midwest emo', 'k-pop']
 
 
 export default function RandomButton({ message }){
   const [random, setRandom] = useState(null)
   const [genre, setGenre] = useState(null)
-  const [rdmOffset, setrdmOffset] = useState(0)
   const dispatch = useDispatch()
 
-  const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', `genre:${genre || 'pop-punk'}`, rdmOffset)
+  const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', `genre:${genre || 'pop-punk'}`)
 
   useEffect(() => {
-    if(!randomLoading && !randomError && randomData) {
+    if(!randomLoading && randomData) {
       let tracks = randomData.tracks.items
       setRandom(tracks)
       setGenre(genre_array[Math.floor(Math.random() * genre_array.length)])
-      setrdmOffset(Math.floor(Math.random() * 50))
     }
   }, [randomData, randomLoading, randomError])
 
 
   const handleRandom = (e) => {
     e.preventDefault();
-    console.log(genre, rdmOffset)
     const filteredSongs = random.filter((song) => {
       return song.album.album_type !== "compilation"
     })

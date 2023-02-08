@@ -1,46 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './App.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { loggedIn } from './features/authentication/authenticationSlice';
 import Header from './components/Header';
 import { Authentication } from './features/authentication/Authentication';
 import { TrackSearch } from './features/trackSearch/TrackSearch';
-import { isSelectionMade, setArtistID, setSelectionMade, setSubmission, setTrackID } from './features/trackSearch/trackSearchSlice';
+import { isSelectionMade } from './features/trackSearch/trackSearchSlice';
 import SongAnalysis from './components/TrackAnalysis';
 import Footer from './components/Footer';
-import useFetch from './hooks/useFetch';
 import RandomButton from './components/RandomButton';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 function App() {
   const isLoggedIn = useSelector(loggedIn);
   const trackSubmitted = useSelector(isSelectionMade)
 
   return (
-    <div className="App">
-        <Header />
-        <main>
-          <div className="wrapper">
-          {!isLoggedIn? (
+    <>
+      <Header />
+      <main>
+        <div className="wrapper">
+          {!isLoggedIn ? 
             <Authentication />
-          ): ( 
-            <>          
-              <TrackSearch />
-              {trackSubmitted ?
-                <SongAnalysis />
-                :
-                <>
-                <p>Search for your favourite song to display its "Sadness" & "Moshability" ratings</p>
-                <p>or</p>
-                <RandomButton
-                message="Get a Random Song" />
-                </>
-              }
-            </>
-          )}
-          </div>
-        </main>
-        <Footer />
-    </div>
+            : (
+              <Routes>
+                <Route
+                exact
+                path="/results"
+                element={<SongAnalysis />}/>
+                <Route
+                exact
+                path="/"
+                element={
+                  !trackSubmitted ? (
+                    <section className="initialSearch">
+                    <TrackSearch />
+                    <p>OR</p>
+                    <RandomButton
+                    message="Get a Random Song Instead"/>
+                  </section>
+                  ) : (
+                    <Navigate replace to={"/results"}/>
+                  )
+                }/>
+              </Routes>
+            )
+          }
+          
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 

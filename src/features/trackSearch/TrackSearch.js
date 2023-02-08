@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { FiXCircle } from 'react-icons/fi'
 import { selectQuery, 
   selectResults, 
   setQuery, 
@@ -16,39 +17,43 @@ import styled from "styled-components";
 
 const FormStyles = styled.form`
 
-.searchContainer {
+.inputSection {
   position:relative;
+  height:max-content;
 }
-
-.searchInput {
-  width:100%;
+.formInput {
   display:flex;
-  flex-wrap:wrap;
-  justify-content:flex-start;
-  align-items:center;
-  max-width:1000px;
-  > * {
-    margin-right:50px;
-    min-width:250px;
-  }
+  align-items:flex-end;
+}
+.formRow {
+  width:80%;
+  flex:2 1 auto;
+  text-align:left;
+  margin-right:15px;
+}
+label {
+  display:block;
+  margin:5px 0;
+}
+input{
+  margin-left:0;
+  width:100%;
 }
 
 .clearInput {
-  height:30px;
-}
-
-.userInput {
-  label {
+  background:none;
+  border:none;
+  position:relative;
+  bottom:3px;
+  svg {
     display:block;
-    text-align:left;
-  }
-  input[type="text"]{
-    width:100%;
   }
 }
   .searchResults {
-    border:solid 0.5px black;
     position:absolute;
+    width:90%;
+    border:solid 0.5px black;
+    left:0;
     background:var(--white);
     height:300px;
     overflow-y:auto;
@@ -135,25 +140,27 @@ export function TrackSearch(){
     <FormStyles
     value={results[0] ? results[0].id : ''}
     onSubmit={(e) => handleSubmission(e, results[0])}>
-      <div className="wrapper">
-        <div className="searchContainer">
-          <div className="searchInput">
-            <div className="userInput">
-            <label htmlFor="trackSearch">Search for A Song</label>
-            <input 
-            type="text" 
-            name="trackSearch" 
-            id="trackSearch" 
-            value={query}
-            required
-            autoComplete="off"
-            minLength="2"
-            onChange={handleInput}/>
+        <div className="inputSection">
+          <div className="formInput">
+            <div className="formRow">
+            <label htmlFor="trackSearch">Enter the name of a song  in the field below: </label>
+              <input 
+              type="text" 
+              name="trackSearch" 
+              id="trackSearch" 
+              value={query}
+              required
+              autoComplete="off"
+              minLength="2"
+              onChange={handleInput}/>
             </div>
             <button
             type="button"
+            aria-label="Clear Search"
             className="clearInput"
-            onClick={handleClear}>Clear Search</button>
+            onClick={handleClear}>
+              <FiXCircle />
+            </button>
           </div>
           {results.length > 0 && 
           <div className="searchResults">
@@ -175,7 +182,6 @@ export function TrackSearch(){
           </div>
           }
         </div>
-      </div>
     </FormStyles>
   )
 }

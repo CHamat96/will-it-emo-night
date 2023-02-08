@@ -29,6 +29,7 @@ export default function useFetch(endpoint, query, offsetNum){
                 // if an "offsetNum" param is declared, use that value. If not, use "0"
                 offset: offsetNum || 0,
                 market: "CA",
+                limit:50
             })
             break;
             default:

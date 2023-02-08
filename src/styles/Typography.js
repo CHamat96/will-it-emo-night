@@ -17,12 +17,15 @@ h1 {
 }
 
 h2 {
-    font-size:2.8rem;
+    font-size:3.2rem;
     text-align:left;
+    margin:5px 0;
 }
 
 h3 {
-  font-size:2.3rem;
+  font-size:2.8rem;
+  margin:5px 0;
+  font-weight:400;
 }
 
 p,
@@ -31,6 +34,7 @@ button,
 label,
 input {
   font-size:1.8rem;
+  font-family:'Cabin', sans-serif;
 }
 
 a {

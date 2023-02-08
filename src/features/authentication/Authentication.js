@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
+import { fetchUser } from "../user/userSlice";
 
 import { setIsLoggedIn, setAccessToken, loggedIn } from "./authenticationSlice";
 
@@ -19,6 +20,7 @@ const AuthenticationSection = styled.section`
     max-width:500px;
     border:dashed var(--green) 5px;
     box-shadow:5px 5px 5px #000;
+    text-align:center;
 `
 
 export function Authentication(){
@@ -28,6 +30,7 @@ export function Authentication(){
         if(access_token){
             dispatch(setIsLoggedIn(true));
             dispatch(setAccessToken(access_token));
+            dispatch(fetchUser(access_token))
         }
     }, [dispatch])
     return (

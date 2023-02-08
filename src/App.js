@@ -9,15 +9,17 @@ import SongAnalysis from './components/TrackAnalysis';
 import Footer from './components/Footer';
 import RandomButton from './components/RandomButton';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import PlaylistDisplay from './features/playlist/PlaylistDisplay';
+
 
 function App() {
   const isLoggedIn = useSelector(loggedIn);
   const trackSubmitted = useSelector(isSelectionMade)
-
   return (
     <>
       <Header />
       <main>
+        <PlaylistDisplay />
         <div className="wrapper">
           {!isLoggedIn ? 
             <Authentication />

@@ -11,6 +11,9 @@ import { selectSubmission, selectArtistID, selectTrackID, isSelectionMade, rever
 import useFetch from "../hooks/useFetch";
 import RandomButton from "./RandomButton";
 import { Link } from "react-router-dom";
+import AddToPlaylist from "../features/playlist/AddtoPlaylist";
+import { clearPlaylist } from "../features/playlist/playlistSlice";
+import PlaylistDisplay from "../features/playlist/PlaylistDisplay";
 
 
 const genre_array = ['pop punk', 'emo', 'metalcore', 'hardcore', 'hardcore punk', 'post-hardcore', 'punk', 'nu metal', 'screamo', 'riot grrrl', 'post-teen', 'ska']
@@ -22,6 +25,10 @@ const ResultStyles = styled.section`
     flex-wrap: wrap;
     gap:2.5rem;
     align-items: flex-start;
+
+    h2 {
+      font-size:clamp(2.5rem,2.5vw,3.4rem);
+    }
   .loading {
     margin:0 auto;
   }
@@ -130,13 +137,15 @@ const ResultStyles = styled.section`
   .ctaFlex {
     display:flex;
     flex-wrap:wrap;
-    justify-content:space-around;
+    justify-content:center;
     gap:1rem;
+    margin:15px 0;
   }
 
   .spotifyCTA {
     display:inline-flex;
     align-items:center;
+    margin:0;
     svg {
       display:block;
       margin-right:5px;
@@ -194,6 +203,11 @@ export default function SongAnalysis(){
     player.pause()
     window.open(spotifyLink, '_none')
   }
+
+  const handleClear = () => {
+    dispatch(revertAll())
+    dispatch(clearPlaylist())
+  }
   
   return (
     <>
@@ -220,6 +234,9 @@ export default function SongAnalysis(){
           </div>
           <div className="imageContainer">
             <img src={selection.album.images[1].url} alt={selection.name} />
+          </div>
+          <div className="ctaFlex">
+            <AddToPlaylist />
           </div>
           <ReactAudioPlayer 
           src={selection.preview_url}
@@ -283,7 +300,7 @@ export default function SongAnalysis(){
               <button
               className="cta"
               type="button"
-              onClick={() => dispatch(revertAll())}>Start Again</button>
+              onClick={() => handleClear()}>Start Again</button>
             </Link>
           <RandomButton
           message="Get Another Random Song" />

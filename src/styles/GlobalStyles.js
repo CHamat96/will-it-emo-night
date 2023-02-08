@@ -38,9 +38,6 @@ html {
     font-family:var(--bodyFont);
 }
 
-
-
-
 .cta {
     background:var(--green);
     color:var(--white);

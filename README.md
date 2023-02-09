@@ -2,6 +2,8 @@
 # Will It Emo Night?
 Use the Spotify API to search for a song &amp; display it's "Energy" and "Sadness" ratings to determine whether or not it would be suitable to play at an "Emo Night"
 
+Live Preview: https://will-it-emo-night.netlify.app/
+
 
 ## Run Locally
 

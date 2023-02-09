@@ -24,36 +24,43 @@ const FormStyles = styled.form`
 .formInput {
   display:flex;
   align-items:flex-end;
+  padding:25px 0;
 }
 .formRow {
   width:80%;
   flex:2 1 auto;
   text-align:left;
-  margin-right:15px;
 }
 label {
   display:block;
   margin:5px 0;
+  width:100%;
+  font-size:clamp(1.4rem, 2.3vw, 2rem)
 }
 input{
   margin-left:0;
   width:100%;
+  border:solid 2px black;
+  border-radius:5px;
+  padding:2px;
 }
 
 .clearInput {
   background:none;
   border:none;
   position:relative;
-  bottom:3px;
+  bottom:4px;
+  margin-left:-30px;
   svg {
     display:block;
   }
 }
   .searchResults {
     position:absolute;
-    width:90%;
     border:solid 0.5px black;
     left:0;
+    width:100%;
+    transform:translateY(-28px);
     background:var(--white);
     height:300px;
     overflow-y:auto;

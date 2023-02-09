@@ -12,10 +12,6 @@ h2 {
   font-weight:600;
 }
 
-h1 {
-  font-size:4rem;
-}
-
 h2 {
     font-size:3.2rem;
     text-align:left;
@@ -40,6 +36,13 @@ input {
 a {
   text-decoration:none;
   color:var(--charcoal);
+  &.spotifyLink {
+    font-weight:600;
+    &:hover,
+    &:focus {
+      color:var(--green);
+    }
+  }
 }
 `
 

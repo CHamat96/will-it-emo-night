@@ -21,6 +21,9 @@ const AuthenticationSection = styled.section`
     border:dashed var(--green) 5px;
     box-shadow:5px 5px 5px #000;
     text-align:center;
+    p {
+        font-style:italic;
+    }
 `
 
 export function Authentication(){
@@ -37,7 +40,7 @@ export function Authentication(){
         <>
         {!isLoggedIn && (
             <AuthenticationSection>
-                <p>This application uses the <a href="https://developer.spotify.com">Spotify API</a> to gather information about the queried songs & bands/artists. Please log in to Spotify to proceed.</p>
+                <p>This application uses the <a className="spotifyLink" href="https://developer.spotify.com" target="_blank" rel="noopener noreferrer">Spotify API</a> to gather information about the queried songs & bands/artists. Please log in to Spotify to proceed.</p>
                 <button
                 aria-label="Connect to Spotify"
                 className="cta"

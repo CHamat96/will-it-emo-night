@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useInView } from 'react-intersection-observer'
 
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import ReactAudioPlayer from 'react-audio-player';
 import { FaSpotify } from 'react-icons/fa'
@@ -10,6 +11,9 @@ import { selectSubmission, selectArtistID, selectTrackID, isSelectionMade, rever
 import useFetch from "../hooks/useFetch";
 import RandomButton from "./RandomButton";
 import { Link } from "react-router-dom";
+import AddToPlaylist from "../features/playlist/AddtoPlaylist";
+import { clearPlaylist, selectToggleMenu } from "../features/playlist/playlistSlice";
+
 
 const genre_array = ['pop punk', 'emo', 'metalcore', 'hardcore', 'hardcore punk', 'post-hardcore', 'punk', 'nu metal', 'screamo', 'riot grrrl', 'post-teen', 'ska']
 
@@ -20,6 +24,13 @@ const ResultStyles = styled.section`
     flex-wrap: wrap;
     gap:2.5rem;
     align-items: flex-start;
+    @media screen and (max-width:400px){
+      justify-content:center;
+    }
+
+    h2 {
+      font-size:clamp(2.5rem,2.5vw,3.4rem);
+    }
   .loading {
     margin:0 auto;
   }
@@ -75,7 +86,7 @@ const ResultStyles = styled.section`
         font-weight:900;
       }
     }
-    .chartFlex {
+  .chartFlex {
     display:flex;
     justify-content:space-around;
     flex-wrap:wrap;
@@ -89,6 +100,10 @@ const ResultStyles = styled.section`
       svg {
         width:100%;
       }
+      .RCP__Pointer {
+        transform:rotate(0deg)
+      }
+      
     }
 
     .indicator {
@@ -100,6 +115,13 @@ const ResultStyles = styled.section`
     width: 100%;
     margin: 0 auto;
     user-select: none;
+    opacity:0;
+    transform:scale(0) rotate(0deg);
+    transition:1s ease-in-out all;
+    &.animated {
+      opacity:1;
+      transform:scale(1) rotate(360deg)
+    }
       p {
       font-family:'Sora', sans-serif;;
       font-size:clamp(1rem, 2.5vw, 1.8rem);
@@ -117,30 +139,35 @@ const ResultStyles = styled.section`
   .ctaFlex {
     display:flex;
     flex-wrap:wrap;
-    justify-content:space-around;
+    justify-content:center;
     gap:1rem;
+    margin:15px 0;
   }
 
   .spotifyCTA {
     display:inline-flex;
     align-items:center;
+    margin:0;
     svg {
       display:block;
       margin-right:5px;
     }
   }
-`
+  `
 
 export default function SongAnalysis(){
   const dispatch = useDispatch()
   const [isSad, setIsSad] = useState(null)
   const [isEnergetic, setIsEnergetic] = useState(null)
   const [isArtistEmo, setIsArtistEmo] = useState(null)
-
+  const { ref, inView } = useInView({
+    threshold: 0.5
+  })
   const selection = useSelector(selectSubmission);
   const selectionMade = useSelector(isSelectionMade);
   const trackID = useSelector(selectTrackID);
   const artistID = useSelector(selectArtistID);
+  const open = useSelector(selectToggleMenu)
 
   const { data: trackData, loading: trackLoading, error: trackError } = useFetch(`audio-features/${trackID}`)
   const { data: artistData, loading: artistLoading, error: artistError } = useFetch(`artists/${artistID}`)
@@ -154,10 +181,18 @@ export default function SongAnalysis(){
     }
   }, [artistData, artistLoading, trackData, trackLoading])
 
+  const handleClear = () => {
+    dispatch(revertAll())
+    dispatch(clearPlaylist())
+  }
+
   if(trackError || artistError){
     return (
       <>
-        <p>Something went wrong...</p>
+        <p>Something went wrong!</p>
+        <button 
+        onClick={() => handleClear()}
+        className="cta">Let's take it from the top...</button>
       </>
     )
   }
@@ -170,18 +205,18 @@ export default function SongAnalysis(){
       </span>
     )
   } 
-
   // Regex variable that is used during the render to format based on whether the artist's name ends with an "s"
   let regex = /s$/
 
-  const handleSpotifyOpen = () => {
+  const handleSpotifyOpen = (e) => {
+    const spotifyLink = e.target.value
     const player = document.querySelector('.react-audio-player')
     player.pause()
-    window.open(selection.uri, '_none')
+    window.open(spotifyLink, '_none')
   }
-  
+
   return (
-    <>
+    <div className={!open ? "mainContent" : 'mainContent blurred'}>
     {(artistLoading || trackLoading) &&
     <ResultStyles>
       <div className="loading">
@@ -193,11 +228,21 @@ export default function SongAnalysis(){
       <ResultStyles>
         <div className="queryContainer">
           <h2>You Selected "{selection.name}" by {artistData.name}</h2>
+          <div className="ctaFlex">
           <button
           className="cta spotifyCTA"
+          value={selection.uri}
           onClick={handleSpotifyOpen}><FaSpotify />Listen on Spotify</button>
+          <button
+          className="cta spotifyCTA"
+          value={artistData.uri}
+          onClick={handleSpotifyOpen}>View Artist on Spotify</button>
+          </div>
           <div className="imageContainer">
             <img src={selection.album.images[1].url} alt={selection.name} />
+          </div>
+          <div className="ctaFlex">
+            <AddToPlaylist />
           </div>
           <ReactAudioPlayer 
           src={selection.preview_url}
@@ -205,50 +250,56 @@ export default function SongAnalysis(){
           autoPlay/>
         </div>
         <div className="songAnalysis">
+        {artistData.genres[0] && 
+        <div className="genreReview">
           <h3>{regex.test(artistData.name) ? "Are" : 'Is' } <span className="strong">{artistData.name}</span> Emo Enough?</h3>
-        {isArtistEmo ? 
-        (
-          <div className="genreReport">
-          <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, so they are definitely Emo enough for Emo Night</p>
-          </div>
-          )
-          
-            : (
-              <div className="genreReport">
-                  <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered</span>} <GenresList />, so they are not Emo enough for Emo Night</p>
-              </div>
-          )}
-          <div className="trackRatings">
-            <h3><span className="title">{selection.name}</span>{regex.test(selection.name) ? `'` : "'s"} Sadness / Moshability Rating:</h3>
-            <div className="chartFlex">
-
+          {isArtistEmo ? 
+          (
+            <div className="genreReport">
+            <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, so they are definitely Emo enough for Emo Night</p>
+            </div>
+            )
+            
+              : (
+                <div className="genreReport">
+                    <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered</span>} <GenresList />, so they are not Emo enough for Emo Night</p>
+                </div>
+            )}
+        </div>
+          }
+          <div 
+          className='trackRatings'>
+            <h3><span className="title">{selection.name}</span>{regex.test(selection.name) ? `'` : "'s"} Sadness / Moshability Ratings:</h3>
+            <div 
+            ref={ref}
+            className="chartFlex">
               <ProgressBar
               radius={100}
-              progress={isSad}
+              progress={inView? isSad : 0}
               strokeWidth={12}
               strokeColor='var(--blue)'
               pointerRadius={8}
               pointerStrokeWidth={5}
               initialAnimation
-              transition="0.8s ease"
+              transition="0.8s ease-in-out"
               pointerStrokeColor='var(--charcoal)'
               >
-                <div className="indicator">
+                <div className={inView ? "indicator animated" : "indicator"}>
                   <p>{isSad}% Sad</p>
                 </div>
               </ProgressBar>
               <ProgressBar
               radius={100}
-              progress={isEnergetic}
+              progress={inView ? isEnergetic : 0}
               strokeWidth={12}
               strokeColor='var(--red)'
               pointerRadius={8}
-              pointerStrokeWidth={5}
               initialAnimation
-              transition="0.8s ease"
+              pointerStrokeWidth={5}
+              transition="0.8s ease-in-out"              trackTransition="none"
               pointerStrokeColor='var(--charcoal)'
               >
-                <div className="indicator">
+                <div className={inView ? "indicator animated" : "indicator"}>
                   <p>{isEnergetic}% Moshable</p>
                 </div>
               </ProgressBar>
@@ -259,7 +310,7 @@ export default function SongAnalysis(){
               <button
               className="cta"
               type="button"
-              onClick={() => dispatch(revertAll())}>Start Again</button>
+              onClick={() => handleClear()}>Start Again</button>
             </Link>
           <RandomButton
           message="Get Another Random Song" />
@@ -267,6 +318,6 @@ export default function SongAnalysis(){
         </div>
       </ResultStyles>
     }
-    </>
+    </div>
   )
 }

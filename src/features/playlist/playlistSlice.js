@@ -7,6 +7,7 @@ const initialState = ({
   playlistReady:false,
   trackURIs: [],
   menuOpen: false,
+  playlist_name:null,
 })
 
 export const clearPlaylist = createAction('REVERT_PLAYLIST')
@@ -30,6 +31,9 @@ const playlistSlice = createSlice({
     setPlaylistReady: (state, action) => {
       state.playlistReady = action.payload
     },
+    setPlaylistName: (state, action) => {
+      state.playlist_name = action.payload
+    },
     deleteTrack: (state, action) => {
       state.tracks = state.tracks.filter(track => track.id !== action.payload.id)
       state.trackURIs = state.trackURIs.filter(uri => uri !== action.payload.uri)
@@ -45,11 +49,12 @@ const playlistSlice = createSlice({
   }
 })
 
-export const { addTrack, toggleHasTracks, createTrackURIs, deleteTrack, setPlaylistReady, togglePlaylistMenu } = playlistSlice.actions
+export const { addTrack, toggleHasTracks, createTrackURIs, deleteTrack, setPlaylistReady, togglePlaylistMenu, setPlaylistName } = playlistSlice.actions
 
 export const selectPlaylist = (state) => state.playlist.tracks
 export const selectTrackURIs = (state) => state.playlist.trackURIs
 export const selectPlaylistReady = (state) => state.playlist.playlistReady
 export const selectToggleMenu = (state) => state.playlist.menuOpen
 export const selectHasTracks = (state) => state.playlist.hasTracks
+export const selectPlaylistName = (state) => state.playlist.playlist_name
 export default playlistSlice.reducer

@@ -66,14 +66,27 @@ const PlaylistStyles = styled.div`
         background:#ffffff90;
         margin:0 10px;
       }
-      h4 {
-        margin:0;
-        padding:15px;
-        font-family:var(--subFont);
-        text-transform:uppercase;
-        font-weight:600;
-        font-size:clamp(2.8rem, 2.6vw, 2rem);
-      }
+      .playlistName {
+        border:none;
+        label,
+        input {
+          font-size:clamp(1.6rem, 2.3vw, 2.4rem);
+        }
+        label{
+          font-family:var(--bodyFont);
+          text-transform:uppercase;
+          padding:5px;
+          display:block;
+        }
+        input[type="text"] {
+          margin:0;
+          width:100%;
+          padding:15px;
+          font-family:var(--subFont);
+          text-transform:uppercase;
+          font-weight:600;
+        }
+    }
       z-index: 2;
       position:fixed;
       background:var(--white);

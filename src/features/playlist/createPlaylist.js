@@ -5,14 +5,16 @@ import { selectUserID, selectUserName } from "../user/userSlice";
 import { selectTrackURIs, setPlaylistReady } from "./playlistSlice";
 
 
-export const ExportPlaylist = () => {
+export const ExportPlaylist = ({ playlistNameInput }) => {
   const token = useSelector(accessToken);
   const userID = useSelector(selectUserID);
   const userName = useSelector(selectUserName)
   const tracks = useSelector(selectTrackURIs)
   const dispatch = useDispatch();
+  const playlistName = playlistNameInput || `${userName}'s Emo Night Playlist`
 
   const handleExport = () => {
+    console.log(playlistName)
     handleCreatePlaylist();
     dispatch(setPlaylistReady(true))
   }
@@ -27,7 +29,7 @@ export const ExportPlaylist = () => {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name:`${userName}'s Emo Night Playlist`, description: `Made with the "Will it Emo Night" Web Application` })
+      body: JSON.stringify({ name: playlistName, description: `Made with the "Will it Emo Night" Web Application` })
     });
     const playlist = await response.json()
     const playlistID = playlist.id;

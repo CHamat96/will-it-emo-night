@@ -2,17 +2,21 @@ import styled from "styled-components";
 
 
 const PlaylistStyles = styled.div`
-    opacity:0;
-    transition: all ease 0.8s;
-    &.visible {
+    .container {
       opacity:1;
+      visibility:visible;
+      &.hidden {
+        opacity:0;
+        visibility:hidden;
+      }
     }
     .sectionToggle {
+      display:block;
       max-width:125px;
       height:auto;
       text-align:center;
       position:fixed;
-      top:35px;
+      top:30px;
       right:35px;
       transition: all ease-in-out 0.3s;
       z-index:3;

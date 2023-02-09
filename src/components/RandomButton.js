@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import { setArtistID, setSelectionMade, setSubmission, setTrackID } from "../features/trackSearch/trackSearchSlice"
 import useFetch from "../hooks/useFetch"
 
-const genre_array = ['pop punk', 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post', 'riot grrrl', 'Folk', 'Funk', 'Garage Rock', 'New Wave', 'pop', 'rock', 'midwest emo', 'k-pop']
+const genre_array = ['pop-punk', "pop-punk", 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post', 'folk', 'funk', 'garage', 'pop', 'rock', 'new-release', 'punk-rock', "midwest emo", "midwest-emo"]
 
 
 export default function RandomButton({ message }){

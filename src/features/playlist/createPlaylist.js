@@ -43,7 +43,7 @@ export const ExportPlaylist = () => {
       }
     )
 
-    window.open(playlist.external_urls.spotify, "_blank")
+    window.open(playlist.uri, "_blank")
   }
 
   return (

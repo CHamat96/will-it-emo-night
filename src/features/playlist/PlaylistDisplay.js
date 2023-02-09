@@ -12,14 +12,18 @@ export default function PlaylistDisplay() {
   const hasTracks = useSelector(selectHasTracks);
 
   const handleDeleteTrack = (song) => {
+    // if(playlist.length === 1 & playlist.indexOf(song) === 1){
+    //   dispatch(selectHasTracks(false))
+    // }
+    dispatch(togglePlaylistMenu(false))
     dispatch(deleteTrack(song))
+
   }
 
 
   return (
-    <PlaylistStyles
-    className={!hasTracks ? null : 'visible'}
-    >
+    <PlaylistStyles>
+      <div className={hasTracks ? "container" : 'container hidden'}>
       <div className={open ? "sectionToggle menuOpen" : "sectionToggle"}>
         <button
         onClick={() => dispatch(togglePlaylistMenu(!open))}>
@@ -57,6 +61,7 @@ export default function PlaylistDisplay() {
             </div>
           ))}
       </div>
+    </div>
     </PlaylistStyles>
   )
 }

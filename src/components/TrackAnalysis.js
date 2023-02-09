@@ -12,8 +12,7 @@ import useFetch from "../hooks/useFetch";
 import RandomButton from "./RandomButton";
 import { Link } from "react-router-dom";
 import AddToPlaylist from "../features/playlist/AddtoPlaylist";
-import { clearPlaylist } from "../features/playlist/playlistSlice";
-import PlaylistDisplay from "../features/playlist/PlaylistDisplay";
+import { clearPlaylist, selectToggleMenu } from "../features/playlist/playlistSlice";
 
 
 const genre_array = ['pop punk', 'emo', 'metalcore', 'hardcore', 'hardcore punk', 'post-hardcore', 'punk', 'nu metal', 'screamo', 'riot grrrl', 'post-teen', 'ska']
@@ -25,6 +24,9 @@ const ResultStyles = styled.section`
     flex-wrap: wrap;
     gap:2.5rem;
     align-items: flex-start;
+    @media screen and (max-width:400px){
+      justify-content:center;
+    }
 
     h2 {
       font-size:clamp(2.5rem,2.5vw,3.4rem);
@@ -165,6 +167,7 @@ export default function SongAnalysis(){
   const selectionMade = useSelector(isSelectionMade);
   const trackID = useSelector(selectTrackID);
   const artistID = useSelector(selectArtistID);
+  const open = useSelector(selectToggleMenu)
 
   const { data: trackData, loading: trackLoading, error: trackError } = useFetch(`audio-features/${trackID}`)
   const { data: artistData, loading: artistLoading, error: artistError } = useFetch(`artists/${artistID}`)
@@ -178,10 +181,18 @@ export default function SongAnalysis(){
     }
   }, [artistData, artistLoading, trackData, trackLoading])
 
+  const handleClear = () => {
+    dispatch(revertAll())
+    dispatch(clearPlaylist())
+  }
+
   if(trackError || artistError){
     return (
       <>
-        <p>Something went wrong...</p>
+        <p>Something went wrong!</p>
+        <button 
+        onClick={() => handleClear()}
+        className="cta">Let's take it from the top...</button>
       </>
     )
   }
@@ -204,13 +215,8 @@ export default function SongAnalysis(){
     window.open(spotifyLink, '_none')
   }
 
-  const handleClear = () => {
-    dispatch(revertAll())
-    dispatch(clearPlaylist())
-  }
-  
   return (
-    <>
+    <div className={!open ? "mainContent" : 'mainContent blurred'}>
     {(artistLoading || trackLoading) &&
     <ResultStyles>
       <div className="loading">
@@ -244,19 +250,23 @@ export default function SongAnalysis(){
           autoPlay/>
         </div>
         <div className="songAnalysis">
+        {artistData.genres[0] && 
+        <div className="genreReview">
           <h3>{regex.test(artistData.name) ? "Are" : 'Is' } <span className="strong">{artistData.name}</span> Emo Enough?</h3>
-        {isArtistEmo ? 
-        (
-          <div className="genreReport">
-          <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, so they are definitely Emo enough for Emo Night</p>
-          </div>
-          )
-          
-            : (
-              <div className="genreReport">
-                  <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered</span>} <GenresList />, so they are not Emo enough for Emo Night</p>
-              </div>
-          )}
+          {isArtistEmo ? 
+          (
+            <div className="genreReport">
+            <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, so they are definitely Emo enough for Emo Night</p>
+            </div>
+            )
+            
+              : (
+                <div className="genreReport">
+                    <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered</span>} <GenresList />, so they are not Emo enough for Emo Night</p>
+                </div>
+            )}
+        </div>
+          }
           <div 
           className='trackRatings'>
             <h3><span className="title">{selection.name}</span>{regex.test(selection.name) ? `'` : "'s"} Sadness / Moshability Ratings:</h3>
@@ -308,6 +318,6 @@ export default function SongAnalysis(){
         </div>
       </ResultStyles>
     }
-    </>
+    </div>
   )
 }

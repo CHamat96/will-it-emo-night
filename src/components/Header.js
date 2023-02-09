@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { loggedIn } from "../features/authentication/authenticationSlice";
-import { isSelectionMade, revertAll } from "../features/trackSearch/trackSearchSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { isSelectionMade } from "../features/trackSearch/trackSearchSlice";
+import {  useSelector } from "react-redux";
 import { TrackSearch } from "../features/trackSearch/TrackSearch";
 import { selectToggleMenu } from "../features/playlist/playlistSlice";
 
@@ -33,16 +32,12 @@ export default function Header(){
     const isLoggedIn = useSelector(loggedIn)
     const selectionMade = useSelector(isSelectionMade)
     const open = useSelector(selectToggleMenu)
-    const dispatch = useDispatch();
     return (
         <HeaderStyles
         className={!open ? "mainContent" : 'mainContent blurred'}>
             <div className="wrapper">
-                <Link to="/"
-                onClick={() => dispatch(revertAll)}>
                     <h1>Will it Emo Night?</h1>
-                    <p className="subtitle">The ultimate Emo-gatekeeping tool!</p>
-                </Link>
+                    <p className="subtitle">The Ultimate Emo Music Gatekeeping Tool!</p>
                 {isLoggedIn && selectionMade && 
                 <TrackSearch />
                 }

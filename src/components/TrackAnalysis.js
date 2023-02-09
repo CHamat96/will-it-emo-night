@@ -15,7 +15,10 @@ import AddToPlaylist from "../features/playlist/AddtoPlaylist";
 import { clearPlaylist, selectToggleMenu } from "../features/playlist/playlistSlice";
 
 
-const genre_array = ['pop punk', 'emo', 'metalcore', 'hardcore', 'hardcore punk', 'post-hardcore', 'punk', 'nu metal', 'screamo', 'riot grrrl', 'post-teen', 'ska']
+const genre_array = ['pop punk', 'emo', 'metalcore', 'hardcore', 'hardcore punk', 'post-hardcore', 'punk', 'nu metal', 'screamo', 'riot grrrl', 'metal', 'ska']
+
+// Bands that (from experience) have been played at Emo Nights
+const emo_ish_bands = ['Panic! at the Disco', 'Avril Lavigne', 'Olivia Rodrigo', "The Killers", "Weezer", "Lustra", "Wheatus", "Thirty Seconds To Mars"]
 
 const ResultStyles = styled.section`
     padding: 50px 15px;
@@ -160,6 +163,7 @@ export default function SongAnalysis(){
   const [isSad, setIsSad] = useState(null)
   const [isEnergetic, setIsEnergetic] = useState(null)
   const [isArtistEmo, setIsArtistEmo] = useState(null)
+  const [isEmoIsh, setIsEmoIsh] = useState(null)
   const { ref, inView } = useInView({
     threshold: 0.5
   })
@@ -175,6 +179,7 @@ export default function SongAnalysis(){
     if(!artistLoading && !trackLoading){
       if(trackData && artistData) {
         setIsArtistEmo(artistData.genres.filter((commonGenre) => genre_array.find((genre) => commonGenre.toLowerCase().includes(genre.toLowerCase()))).length > 0)
+        setIsEmoIsh(emo_ish_bands.filter((band) => band.toLowerCase().includes(artistData.name.toLowerCase())).length > 0)
         setIsSad(Math.floor((1 - trackData.valence) * 100))
         setIsEnergetic(Math.floor(trackData.energy * 100))
       }
@@ -242,7 +247,7 @@ export default function SongAnalysis(){
             <img src={selection.album.images[1].url} alt={selection.name} />
           </div>
           <div className="ctaFlex">
-            <AddToPlaylist />
+            {isArtistEmo || isEmoIsh ?  <AddToPlaylist /> : ''}
           </div>
           <ReactAudioPlayer 
           src={selection.preview_url}
@@ -256,13 +261,17 @@ export default function SongAnalysis(){
           {isArtistEmo ? 
           (
             <div className="genreReport">
-            <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, so they are definitely Emo enough for Emo Night</p>
+            <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, so they are definitely Emo enough for Emo Night!</p>
             </div>
             )
-            
+              : isEmoIsh? (
+                <div className="genreReport">
+                <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include <GenresList /></span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered <GenresList /></span>}, but they are still considered Emo enough for Emo Night!</p>
+                </div>
+              )
               : (
                 <div className="genreReport">
-                    <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered</span>} <GenresList />, so they are not Emo enough for Emo Night</p>
+                    <p>{artistData.name.trim()}{artistData.genres.length >= 2 ? <span>{regex.test(artistData.name) ? `'` : "'s"} genres include</span> : <span> {regex.test(artistData.name.trim()) ? "are" : 'is' } considered</span>} <GenresList />, so they are not Emo enough for Emo Night.</p>
                 </div>
             )}
         </div>

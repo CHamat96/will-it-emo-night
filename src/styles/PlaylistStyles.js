@@ -45,6 +45,7 @@ const PlaylistStyles = styled.div`
         min-width:25px;
         border-radius:50%;
         padding:3px;
+        z-index:10;
         box-shadow:1px 2px 8px var(--darkRed);
       }
       &.menuOpen {

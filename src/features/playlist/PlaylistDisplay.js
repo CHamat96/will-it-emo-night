@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from 'react'
 import { selectPlaylist, clearPlaylist, deleteTrack, selectToggleMenu, togglePlaylistMenu, selectHasTracks } from "./playlistSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { ExportPlaylist } from "./createPlaylist";
@@ -6,35 +7,51 @@ import { FiXCircle } from 'react-icons/fi'
 import  PlaylistStyles  from "../../styles/PlaylistStyles";
 
 export default function PlaylistDisplay() {
+  const [isOpen, setIsOpen] = useState(false)
   const open = useSelector(selectToggleMenu);
   const playlist = useSelector(selectPlaylist)
   const dispatch = useDispatch();
+  const toggleRef = useRef(null)
   const hasTracks = useSelector(selectHasTracks);
 
   const handleDeleteTrack = (song) => {
-    // if(playlist.length === 1 & playlist.indexOf(song) === 1){
-    //   dispatch(selectHasTracks(false))
-    // }
     dispatch(togglePlaylistMenu(false))
     dispatch(deleteTrack(song))
-
   }
+
+  useEffect(() => {
+    setIsOpen(open)
+  }, [open])
+
+  useEffect(() => {
+    const toggleMenuOutsideClick = (event) => {
+      if(toggleRef.current && !toggleRef.current.contains(event.target) && isOpen) {
+        dispatch(togglePlaylistMenu(false))
+      }
+    }
+    document.addEventListener('click', toggleMenuOutsideClick);
+    return () => {
+      document.removeEventListener('click', toggleMenuOutsideClick)
+    };
+  }, [dispatch, isOpen, toggleRef])
 
 
   return (
-    <PlaylistStyles>
+    <PlaylistStyles
+    ref={toggleRef}>
       <div className={hasTracks ? "container" : 'container hidden'}>
-      <div className={open ? "sectionToggle menuOpen" : "sectionToggle"}>
+      <div className={isOpen ? "sectionToggle menuOpen" : "sectionToggle"}>
         <button
         onClick={() => dispatch(togglePlaylistMenu(!open))}>
           <TbHandRock />
           <p>
-          {!open ? "View Playlist" : "Close Playlist"}
+          {!isOpen ? "View Playlist" : "Close Playlist"}
           </p>
           {playlist.length > 0 && <div className="playlistCount">{playlist.length}</div>}
         </button>
       </div>
-      <div className={open ? "playlist open" : 'playlist'}>
+      <div 
+      className={isOpen ? "playlist open" : 'playlist'}>
         <div className="playlistHeading">
           <h4>Your Emo Night Playlist:</h4>
         </div>

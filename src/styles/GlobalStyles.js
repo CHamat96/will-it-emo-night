@@ -116,6 +116,7 @@ ul {
     transition: filter ease-in-out 0.8s;
     &.blurred {
         filter:blur(8px);
+        pointer-events:none;
     }
   }
 

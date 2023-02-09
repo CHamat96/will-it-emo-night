@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addTrack, selectPlaylist,togglePlaylistMenu, createTrackURIs } from "./playlistSlice";
+import { addTrack, selectPlaylist,togglePlaylistMenu, createTrackURIs, selectToggleMenu } from "./playlistSlice";
 import { selectSubmission } from "../trackSearch/trackSearchSlice";
 import styled from "styled-components";
 
@@ -23,14 +23,17 @@ button {
 export default function AddToPlaylist(){
   const selection = useSelector(selectSubmission)
   const playlist = useSelector(selectPlaylist)
+  const open = useSelector(selectToggleMenu)
   const dispatch = useDispatch();
 
 
   const handleAddTrack = () => {
     if(!playlist.some(track => track.id === selection.id)){
       dispatch(addTrack(selection))
-      dispatch(togglePlaylistMenu(true))
       dispatch(createTrackURIs(selection.uri))
+        if(!open) {
+          dispatch(togglePlaylistMenu(true))
+        }
       }
         else {
         alert(`"${selection.name}" by ${selection.artists[0].name} is already in your playlist!`)

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
-import { setArtistID, setSelectionMade, setSubmission, setTrackID } from "../features/trackSearch/trackSearchSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { setArtistID, setSelectionMade, setSubmission, setTrackID, selectSubmission } from "../features/trackSearch/trackSearchSlice"
 import useFetch from "../hooks/useFetch"
 
-const genre_array = ['pop-punk', "pop-punk", 'emo', 'alternative', 'metalcore', 'hardcore', 'punk', 'nu metal', 'screamo', 'metal', 'post', 'folk', 'funk', 'garage', 'pop', 'rock', 'new-release', 'punk-rock', "midwest emo", "midwest-emo"]
+const genre_array = ['pop-punk', "pop-punk", 'emo', 'alternative-rock', 'metalcore', 'hardcore', 'punk', 'nu-metal', 'screamo', 'metal', 'post-punk', 'folk', 'funk', 'garage', 'pop', 'rock', 'alt-rock', 'punk-rock', "midwest emo", "midwest-emo", "modern-rock"]
 
 
 export default function RandomButton({ message }){
   const [random, setRandom] = useState(null)
-  const [genre, setGenre] = useState(null)
+  const [genre, setGenre] = useState('pop-punk')
   const dispatch = useDispatch()
-
-  const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', `genre:${genre || 'pop-punk'}`)
+  const { data: randomData, loading: randomLoading, error: randomError } = useFetch('search', `genre:${genre}`)
+  const currentSong = useSelector(selectSubmission)
 
   useEffect(() => {
     if(!randomLoading && randomData) {
@@ -28,7 +28,12 @@ export default function RandomButton({ message }){
       return song.album.album_type !== "compilation"
     })
     const index = Math.floor(Math.random() * filteredSongs.length)
-    handleSubmission(e, filteredSongs[index])
+    // Ensure there will always be a different song selected when clicking the random button
+    if(filteredSongs[index].id !== currentSong.id) {
+      handleSubmission(e, filteredSongs[index])
+    } else {
+      handleSubmission(e, filteredSongs[index + 1])
+    }
   }
 
   const handleSubmission = (e, song) => {

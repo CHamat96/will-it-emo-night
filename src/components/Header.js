@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { loggedIn } from "../features/authentication/authenticationSlice";
 import { isSelectionMade, revertAll } from "../features/trackSearch/trackSearchSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { TrackSearch } from "../features/trackSearch/TrackSearch";
 import { selectToggleMenu } from "../features/playlist/playlistSlice";
 

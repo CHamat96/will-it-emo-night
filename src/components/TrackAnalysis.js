@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer'
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import ReactAudioPlayer from 'react-audio-player';
-import { FaSpotify } from 'react-icons/fa'
+import { FaSpotify, FaPlay, FaPause } from 'react-icons/fa'
 import ProgressBar from 'react-customizable-progressbar';
 import { selectSubmission, selectArtistID, selectTrackID, isSelectionMade, revertAll } from "../features/trackSearch/trackSearchSlice";
 import useFetch from "../hooks/useFetch";
@@ -156,6 +156,18 @@ const ResultStyles = styled.section`
       margin-right:5px;
     }
   }
+
+  .previewControl {
+    margin:15px 0;
+    background:none;
+    border:solid 5px var(--green);
+    border-radius:50%;
+    padding:15px;
+    svg {
+      display:block;
+      font-weight:700;
+    }
+  }
   `
 
 export default function SongAnalysis(){
@@ -164,6 +176,7 @@ export default function SongAnalysis(){
   const [isEnergetic, setIsEnergetic] = useState(null)
   const [isArtistEmo, setIsArtistEmo] = useState(null)
   const [isEmoIsh, setIsEmoIsh] = useState(null)
+  const [previewPlaying, setPreviewPlaying] = useState(true)
   const { ref, inView } = useInView({
     threshold: 0.5
   })
@@ -182,6 +195,7 @@ export default function SongAnalysis(){
         setIsEmoIsh(emo_ish_bands.filter((band) => band.toLowerCase().includes(artistData.name.toLowerCase())).length > 0)
         setIsSad(Math.floor((1 - trackData.valence) * 100))
         setIsEnergetic(Math.floor(trackData.energy * 100))
+        setPreviewPlaying(true)
       }
     }
   }, [artistData, artistLoading, trackData, trackLoading])
@@ -202,6 +216,18 @@ export default function SongAnalysis(){
     )
   }
 
+  const handlePreviewPlay = () => {
+    const player = document.querySelector('.react-audio-player')
+    setPreviewPlaying(true)
+    player.play()
+  }
+
+  const handlePreviewPause = () => {
+    const player = document.querySelector('.react-audio-player')
+    setPreviewPlaying(false)
+    player.pause()
+  }
+
   const GenresList = () => {
     return (
       <span className="genresList">
@@ -217,8 +243,11 @@ export default function SongAnalysis(){
     const spotifyLink = e.target.value
     const player = document.querySelector('.react-audio-player')
     player.pause()
+    setPreviewPlaying(false)
     window.open(spotifyLink, '_none')
   }
+
+  
 
   return (
     <div className={!open ? "mainContent" : 'mainContent blurred'}>
@@ -246,12 +275,29 @@ export default function SongAnalysis(){
           <div className="imageContainer">
             <img src={selection.album.images[1].url} alt={selection.name} />
           </div>
+          { previewPlaying ? (
+            <button
+            className="previewControl pauseButton"
+            onClick={handlePreviewPause}
+            title="Pause Preview"
+            aria-label="pause track preview"
+            ><FaPause /></button>
+            ) : (
+              <button
+              className="previewControl playButton"
+              title="Play Preview"
+              aria-label="play track preview"
+              onClick={handlePreviewPlay}>
+              <FaPlay />
+              </button>
+            )}
           <div className="ctaFlex">
             {isArtistEmo || isEmoIsh ?  <AddToPlaylist /> : ''}
           </div>
           <ReactAudioPlayer 
           src={selection.preview_url}
           volume={0.4}
+          onEnded={() => setPreviewPlaying(false)}
           autoPlay/>
         </div>
         <div className="songAnalysis">

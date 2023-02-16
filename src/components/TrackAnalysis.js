@@ -162,7 +162,7 @@ const ResultStyles = styled.section`
     background:none;
     border:solid 5px var(--green);
     border-radius:85%;
-    padding:25px;
+    padding:20px 25px;
     svg {
       display:block;
       font-weight:700;

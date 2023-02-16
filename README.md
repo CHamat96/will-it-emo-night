@@ -5,6 +5,7 @@ Use the Spotify API to search for a song &amp; display it's "Sadness" and  ratin
 ## New Features
 * Users can Randomly generate a song & view its Sadness/Moshability ratings
 * Users can add the current song to an "Emo Night Playlist," which can then be exported to their Spotify Account
+* Users can now adjust the playlist order by shifting the songs either up or down in the playlist order
 
 ### Roadmap
 #### Recent Updates

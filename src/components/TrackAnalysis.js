@@ -161,11 +161,12 @@ const ResultStyles = styled.section`
     margin:15px 0;
     background:none;
     border:solid 5px var(--green);
-    border-radius:50%;
-    padding:15px;
+    border-radius:85%;
+    padding:25px;
     svg {
       display:block;
       font-weight:700;
+      font-size:2.5rem;
     }
   }
   `
@@ -275,6 +276,7 @@ export default function SongAnalysis(){
           <div className="imageContainer">
             <img src={selection.album.images[1].url} alt={selection.name} />
           </div>
+          <div className="ctaFlex">
           { previewPlaying ? (
             <button
             className="previewControl pauseButton"
@@ -291,7 +293,6 @@ export default function SongAnalysis(){
               <FaPlay />
               </button>
             )}
-          <div className="ctaFlex">
             {isArtistEmo || isEmoIsh ?  <AddToPlaylist /> : ''}
           </div>
           <ReactAudioPlayer 

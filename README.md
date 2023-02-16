@@ -14,7 +14,6 @@ Use the Spotify API to search for a song &amp; display it's "Sadness" and  ratin
 - Added a Text Input for users to change the name of their playlist.
 
 #### Current Work
-* Add the ability for users to change the order of their playlist
 * General bugfixes & testing
 
 ## Run Locally

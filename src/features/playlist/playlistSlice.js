@@ -12,6 +12,7 @@ const initialState = ({
 
 export const clearPlaylist = createAction('REVERT_PLAYLIST')
 
+
 const playlistSlice = createSlice({
   name: 'playlist',
   initialState,
@@ -41,7 +42,27 @@ const playlistSlice = createSlice({
     },
     togglePlaylistMenu: (state, action) => {
       state.menuOpen = action.payload
-    }
+    },
+    moveItemUp: (state, action) => {
+      const { index } = action.payload;
+      if( index > 0 && index < state.tracks.length){
+        const newTracks = [...state.tracks];
+        const currentTrack = newTracks[index];
+        newTracks[index] = newTracks[index - 1];
+        newTracks[index - 1] = currentTrack;
+        state.tracks = newTracks
+      }
+    },
+    moveItemDown: (state, action) => {
+      const { index } = action.payload;
+      if( index >= 0 && index < state.tracks.length - 1){
+        const newTracks = [...state.tracks];
+        const currentTrack = newTracks[index];
+        newTracks[index] = newTracks[index + 1];
+        newTracks[index + 1] = currentTrack;
+        state.tracks = newTracks
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -49,7 +70,7 @@ const playlistSlice = createSlice({
   }
 })
 
-export const { addTrack, toggleHasTracks, createTrackURIs, deleteTrack, setPlaylistReady, togglePlaylistMenu, setPlaylistName } = playlistSlice.actions
+export const { addTrack, toggleHasTracks, createTrackURIs, deleteTrack, setPlaylistReady, togglePlaylistMenu, setPlaylistName, moveItemDown, moveItemUp } = playlistSlice.actions
 
 export const selectPlaylist = (state) => state.playlist.tracks
 export const selectTrackURIs = (state) => state.playlist.trackURIs

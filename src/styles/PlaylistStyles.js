@@ -135,12 +135,6 @@ const PlaylistStyles = styled.div`
         font-size:clamp(1.4rem, 2.3vw, 2rem);
         font-weight:600;
         padding:0 15px;
-        &:first-child {
-          align-self:center;
-          justify-self:center;
-          width:20px;
-          padding-right:25px;
-        }
         .artist {
           font-size:clamp(1.3rem, 2.3vw, 1.8rem);
         }
@@ -153,6 +147,56 @@ const PlaylistStyles = styled.div`
         position:absolute;
       }
     }
+    .playlistOrder {
+      flex:0 1 auto;
+      display:flex;
+      max-width:25px;
+      padding:15px;
+      position:relative;
+      flex-direction:column;
+      align-items:center;
+      p {
+        flex: 2 1 auto;
+        margin:3px 0;
+      }
+      .dirArrow {
+        background:none;
+        border:none;
+        height:100%;
+        position:absolute;
+        font-size:clamp(1.5rem, 1.8vw, 2.3rem);
+        color:var(--white);
+        &:hover,
+        &:focus {
+          animation: pulse ease-in-out 0.8s
+        }
+        &.arrowUp {
+          top:-25px;
+        }
+        &.arrowDown {
+          bottom:-25px;
+        }
+      }
+    }
+    
+  @keyframes pulse {
+    25% {
+      transform:scale(0.8)
+    }
+    40% {
+      transform:scale(1.0)
+    }
+    60% {
+      transform:scale(1.25);
+      color:black;
+    }
+    80% {
+      transform:scale(0.8)
+    }
+    100% {
+      transform:scale(1.0);
+    }
+  }
 `
 
 export default PlaylistStyles

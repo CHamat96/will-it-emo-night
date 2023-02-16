@@ -1,6 +1,6 @@
 
 # Will It Emo Night?
-Use the Spotify API to search for a song &amp; display it's "Energy" and "Sadness" ratings to determine whether or not it would be suitable to play at an "Emo Night"
+Use the Spotify API to search for a song &amp; display it's "Sadness" and  ratings to determine whether or not it would be suitable to play at an "Emo Night"
 
 ## New Features
 * Users can Randomly generate a song & view its Sadness/Moshability ratings

@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { selectPlaylist, clearPlaylist, deleteTrack, selectToggleMenu, togglePlaylistMenu, selectHasTracks, selectPlaylistName, setPlaylistName } from "./playlistSlice";
+import { selectPlaylist, clearPlaylist, deleteTrack, selectToggleMenu, togglePlaylistMenu, selectHasTracks, selectPlaylistName, setPlaylistName, moveItemUp, moveItemDown } from "./playlistSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { ExportPlaylist } from "./createPlaylist";
 import { TbHandRock } from 'react-icons/tb'
 import { FiXCircle } from 'react-icons/fi'
+import { FaCaretUp, FaCaretDown } from 'react-icons/fa';
 import  PlaylistStyles  from "../../styles/PlaylistStyles";
 import { selectUserName } from '../user/userSlice';
 
 export default function PlaylistDisplay() {
   const [isOpen, setIsOpen] = useState(false)
-  // const [newPlaylistName, setNewPlaylistName] = useState('')
   const open = useSelector(selectToggleMenu);
   const userName = useSelector(selectUserName)
   const playlist = useSelector(selectPlaylist)
@@ -18,8 +18,8 @@ export default function PlaylistDisplay() {
   const hasTracks = useSelector(selectHasTracks);
   const playlistName = useSelector(selectPlaylistName)
 
-  const handleDeleteTrack = (song) => {
-    dispatch(togglePlaylistMenu(false))
+  const handleDeleteTrack = (event, song) => {
+    event.stopPropagation();
     dispatch(deleteTrack(song))
   }
 
@@ -44,6 +44,15 @@ export default function PlaylistDisplay() {
     };
   }, [dispatch, isOpen, toggleRef])
 
+  const handleShiftUp = (event, index) => {
+    event.stopPropagation();
+    dispatch(moveItemUp({ index }))
+  }
+
+  const handleShiftDown = (event, index) => {
+    event.stopPropagation();
+    dispatch(moveItemDown({ index }))
+  }
 
   return (
     <PlaylistStyles
@@ -79,7 +88,19 @@ export default function PlaylistDisplay() {
           {playlist.map((song, index) => (
             <div key={`${song.id} - ${index}`}>
               <div className="songDetails">
+                <div className="playlistOrder">
+                {index > 0 &&  <button
+                  ref={toggleRef}
+                  className="dirArrow arrowUp"
+                  onClick={(e) => handleShiftUp(e, index)}
+                  ><FaCaretUp /></button>}
                 <p>{index + 1}</p>
+                  {index < playlist.length - 1 && <button
+                  ref={toggleRef}
+                  className="dirArrow arrowDown"
+                  onClick={(e) => handleShiftDown(e, index)}
+                  ><FaCaretDown /></button>}
+                </div>
                 {song.album.images[2] && <img src={song.album.images[1].url} alt={song.name} /> }
                   <p>{song.name} - <span className="artist">{song.artists.map(artist => artist.name)}</span></p>
                 <button
@@ -87,7 +108,7 @@ export default function PlaylistDisplay() {
                 className="deleteSong"
                 aria-label={`Remove "${song.name}" from your playlist`}
                 title={`Remove "${song.name}" from your playlist`}
-                onClick={() => handleDeleteTrack(song)}
+                onClick={(e) => handleDeleteTrack(e, song)}
                 ><FiXCircle/></button>
               </div>
             </div>

@@ -1,70 +1,54 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Will It Emo Night?
+Use the Spotify API to search for a song &amp; display it's "Sadness" and  ratings to determine whether or not it would be suitable to play at an "Emo Night"
 
-## Available Scripts
+## New Features
+* Users can Randomly generate a song & view its Sadness/Moshability ratings
+* Users can add the current song to an "Emo Night Playlist," which can then be exported to their Spotify Account
+* Users can now adjust the playlist order by shifting the songs either up or down in the playlist order
 
-In the project directory, you can run:
+### Roadmap
+#### Recent Updates
+- Fixed a few issues with the "Random Song" button that would either prevent a new song from loading, or on a few occurrences display the same song as the previous entry.
+- Cut down the number of accepted genres in the `TrackAnalysis` component, but also added an array of "Emo-Adjacent" artists that would be considered "Emo enough for Emo Night".
+- Made the "Add to Playlist" CTA conditionally render for Emo or Emo-adjacent songs.
+- Added a Text Input for users to change the name of their playlist.
 
-### `npm start`
+#### Current Work
+* General bugfixes & testing
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Run Locally
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Clone the project to your local machine
 
-### `npm test`
+```bash
+  git clone https://github.com/CHamat96/will-it-emo-night.git
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Go to the project directory
 
-### `npm run build`
+```bash
+  cd will-it-emo-night
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Install dependencies
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+  npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Start the server
 
-### `npm run eject`
+```bash
+  npm run start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Environment Variables
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The project requires a client ID token from the [Spotify API](https://developer.spotify.com/) in order to work. To run the project locally, you will need to sign up for one and set it as an environment variable. Once you have signed up for a key, create a `.env` file at the root folder of the project, then paste the key as a `REACT_APP_CLIENT_ID` variable. 
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Additionally, the API requires a "redirect URI" to redirect the user to after successfull (or unsuccessful) authentication. To run the local build of the project, create another environment variable called `REACT_APP_REDIRECT_URI` with the value `http://localhost:3000`
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
